@@ -30,22 +30,23 @@ debug_loopy= #-debug-only=polly-pwaff
 # Debug Output for target AST
 debug_ast= #-debug-only=polly-ast
 
+(
 
 ## Compile bechmarks
 # LLVM IR
 $llvm_build/bin/clang -I $polybench/utilities -S -emit-llvm $dump $time $testfile.c -o $testfile.s
-alias opt="$llvm_build/bin/opt -load $llvm_build/lib/LLVMPolly.so"
-opt -S -polly-canonicalize $testfile.s > $testfile.preopt.ll
+opt="$llvm_build/bin/opt -load $llvm_build/lib/LLVMPolly.so"
+$opt -S -polly-canonicalize $testfile.s > $testfile.preopt.ll
 
 # Loopy Executable
 echo "Compiling Loopy version ..."
-opt $debug_loopy $debug_ast -polly-pwaff -polly-codegen -polly-trans=$testdir/opt.t  -S $testfile.preopt.ll | opt -O3 > $testfile.loopy.ll 
+$opt $debug_loopy $debug_ast -polly-pwaff -polly-codegen -polly-trans=$testdir/opt.t  -S $testfile.preopt.ll | $opt -O3 > $testfile.loopy.ll
 $llvm_build/bin/llc $testfile.loopy.ll -o $testfile.loopy.s
 gcc -I $polybench/utilities $testfile.loopy.s $polybench/utilities/polybench.c $dump $time -o $testfile.loopy.exe -lm
 
 # Polly Executable
 echo "Compiling Polly version ..."
-opt -O3 $debug_ast -polly $testfile.preopt.ll > $testfile.polly.ll
+$opt -O3 $debug_ast -polly $testfile.preopt.ll > $testfile.polly.ll
 $llvm_build/bin/llc $testfile.polly.ll -o $testfile.polly.s
 gcc -I $polybench/utilities $testfile.polly.s $polybench/utilities/polybench.c $time $dump -o $testfile.polly.exe -lm
 
@@ -57,6 +58,7 @@ $llvm_build/bin/clang -O3 -I $polybench/utilities $polybench/utilities/polybench
 # echo "Compiling ICC version ..."
 # icc -O3 -I $polybench/utilities $polybench/utilities/polybench.c $dump $time $testfile.c -o $testfile.icc.exe 
 
+) >$testfile.compile.log 2>&1
 
 ## Execute optimized benchmarks
 ltime=`$testfile.loopy.exe 2>$testfile.loopy.log`
@@ -66,6 +68,8 @@ lltime=`$testfile.llvm.exe 2>$testfile.llvm.log`
 
 
 ## Output execution times
+printf "$testfile\t$ltime\t$ptime\t$lltime\n" >&2
+
 echo
 echo "---------------------"
 echo "Execution time"

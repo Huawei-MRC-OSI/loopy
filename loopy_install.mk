@@ -4,10 +4,10 @@
 # =========================== Customize =========================== 
 
 # Loopy root directory
-ROOT_DIR=/home/loopy
+ROOT_DIR=$(HOME)/proj/loopy
 
 # Number of processors to run make on 
-PAR_BUILD=2
+PAR_BUILD=8
 
 
 # =========================== Derived =========================== 
@@ -35,7 +35,7 @@ get_llvm: setup
 	svn co -r 241394 http://llvm.org/svn/llvm-project/llvm/trunk ${LLVM_DIR}/trunk
 
 get_clang: setup
-	 svn co -r 241394 http://llvm.org/svn/llvm-project/cfe/trunk ${LLVM_DIR}/trunk/tools/clang
+	svn co -r 241394 http://llvm.org/svn/llvm-project/cfe/trunk ${LLVM_DIR}/trunk/tools/clang
 
 # copy Loopy code
 get_loopy: setup
@@ -48,7 +48,7 @@ build: setup get_loopy get_clang get_llvm
 
 # =========================== Test =========================== 
 # run Loopy tests
-test: 
+test:
 	cd ${TESTS_DIR}; \
 	sh clean-up.sh; \
 	sh run-all-tests.sh ${LLVM_BUILD_DIR}

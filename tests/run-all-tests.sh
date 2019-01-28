@@ -1,5 +1,5 @@
 # Run all Polybench tests
-# Invoke as 
+# Invoke as
 #    sh run-all-tests.sh ${LLVM_BUILD_DIR}
 #
 
@@ -13,7 +13,8 @@ TESTS="$TESTS $(find ${POLYBENCH_DIR}/linear-algebra -name "*.c")"
 TESTS="$TESTS $(find ${POLYBENCH_DIR}/stencils -name "*.c")"
 TESTS="$TESTS $(find ${POLYBENCH_DIR}/medley -name "*.c")"
 
-for f in ${TESTS}; do 
+echo "# TestName Loopy_SEC Polly_SEC LLVM_SEC" >polybench.log
+for f in ${TESTS}; do
      echo ">> Testing $f"
-     sh run-polybench-test.sh ${LLVM_BUILD_DIR} $f
+     sh run-polybench-test.sh ${LLVM_BUILD_DIR} $f 2>>polybench.log
 done

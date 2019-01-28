@@ -1,6 +1,8 @@
+#!/bin/sh
+#
 # Test script for Polybench benchmarks
 #
-# Invoke as 
+# Invoke as
 #   sh ./run-loopy.sh ${LLVM_BUILD_DIR} <progfile> <optfile>
 #   ex: sh run-loopy.sh ../llvm/build matmul.c  matmul.t
 
@@ -16,7 +18,7 @@ llvm_build=$1
 ## SET progfile
 progfile=$(dirname $2)/$(basename -s .c $2)
 
-## SET optfile 
+## SET optfile
 optfile=$3
 
 # Debug Output from Loopy
@@ -37,7 +39,7 @@ opt -S -polly-canonicalize $progfile.s > $progfile.preopt.ll
 echo "Compiling Loopy version ..."
 opt $debug_loopy $debug_ast -polly-pwaff -polly-codegen -polly-trans=$optfile -S $progfile.preopt.ll | opt -O3 > $progfile.loopy.ll 
 $llvm_build/bin/llc $progfile.loopy.ll -o $progfile.loopy.s
-gcc $progfile.loopy.s -o $progfile.loopy.exe 
+gcc $progfile.loopy.s -o $progfile.loopy.exe
 
 # Polly Executable
 echo "Compiling Polly version ..."
