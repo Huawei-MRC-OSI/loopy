@@ -13,8 +13,8 @@ TESTS="$TESTS $(find ${POLYBENCH_DIR}/linear-algebra -name "*.c")"
 TESTS="$TESTS $(find ${POLYBENCH_DIR}/stencils -name "*.c")"
 TESTS="$TESTS $(find ${POLYBENCH_DIR}/medley -name "*.c")"
 
-echo "# TestName Loopy_SEC Polly_SEC LLVM_SEC" >polybench.log
+printf "TestName\tLoopy_SEC\tPolly_SEC\tLLVM_SEC\n" >polybench.csv
 for f in ${TESTS}; do
      echo ">> Testing $f"
-     sh run-polybench-test.sh ${LLVM_BUILD_DIR} $f 2>>polybench.log
+     sh run-polybench-test.sh ${LLVM_BUILD_DIR} $f 2>>polybench.csv
 done
