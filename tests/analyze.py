@@ -4,6 +4,7 @@ A=pd.read_csv('tests/polybench.csv', sep='\t')
 
 A['Polly_Loopy_speedup'] = A['Polly_SEC'] / A['Loopy_SEC']
 A['LLVM_Loopy_speedup'] = A['LLVM_SEC'] / A['Loopy_SEC']
+A['Polly_LLVM_speedup'] = A['LLVM_SEC'] / A['Polly_SEC']
 print(A)
 
 

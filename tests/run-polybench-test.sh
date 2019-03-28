@@ -19,16 +19,16 @@ polybench=$(dirname "$0")/polybench-c-4.1
 # =============================================================================
 ## Flags 
 # Dump outputs from benchmarks?
-dump= #-DPOLYBENCH_DUMP_ARRAYS
+dump= # -DPOLYBENCH_DUMP_ARRAYS
 
 # Time the kernel execution?
 time=-DPOLYBENCH_TIME
 
 # Debug Output from Loopy
-debug_loopy= #-debug-only=polly-pwaff
+debug_loopy=-debug-only=polly-pwaff
 
 # Debug Output for target AST
-debug_ast= #-debug-only=polly-ast
+debug_ast=-debug-only=polly-ast
 
 (
 

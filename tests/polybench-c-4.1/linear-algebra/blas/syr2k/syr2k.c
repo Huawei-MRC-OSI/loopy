@@ -54,12 +54,21 @@ void print_array(int n,
   int i, j;
 
   POLYBENCH_DUMP_START;
-  POLYBENCH_DUMP_BEGIN("C");
-  for (i = 0; i < n; i++)
+  POLYBENCH_DUMP_BEGIN("C\n");
+
+  fprintf (POLYBENCH_DUMP_TARGET, "N=%d\n", n);
+
+  for (i = 0; i < n; i++) {
+    fprintf (POLYBENCH_DUMP_TARGET, "\n%d: ", i);
+
     for (j = 0; j < n; j++) {
-	if ((i * n + j) % 20 == 0) fprintf (POLYBENCH_DUMP_TARGET, "\n");
-	fprintf (POLYBENCH_DUMP_TARGET, DATA_PRINTF_MODIFIER, C[i][j]);
+      // if ((i * n + j) % 20 == 0) {
+      //   fprintf (POLYBENCH_DUMP_TARGET, "\n%d: ", i);
+      // }
+      fprintf (POLYBENCH_DUMP_TARGET, DATA_PRINTF_MODIFIER, C[i][j]);
     }
+
+  }
   POLYBENCH_DUMP_END("C");
   POLYBENCH_DUMP_FINISH;
 }
@@ -87,13 +96,14 @@ void kernel_syr2k(int n, int m,
   for (i = 0; i < _PB_N; i++)
     for (j = 0; j < _PB_N; j++)
       C[i][j] *= beta;
-  for (i = 0; i < _PB_N; i++)
+  for (i = 0; i < _PB_N; i++) {
     for (k = 0; k < _PB_M; k++) {
       for (j = 0; j < _PB_N; j++)
-	{
-Mult:	  C[i][j] += A[j][k] * alpha*B[i][k] + B[j][k] * alpha*A[i][k];
-	}
+      {
+    Mult:	  C[i][j] += A[j][k] * alpha*B[i][k] + B[j][k] * alpha*A[i][k];
+      }
      }
+  }
 #pragma endscop
 
 }
@@ -118,6 +128,8 @@ int main(int argc, char** argv)
 	      POLYBENCH_ARRAY(A),
 	      POLYBENCH_ARRAY(B));
 
+  polybench_prevent_dce(print_array(n, POLYBENCH_ARRAY(C)));
+
   /* Start timer. */
   polybench_start_instruments;
 
@@ -131,6 +143,7 @@ int main(int argc, char** argv)
   /* Stop and print timer. */
   polybench_stop_instruments;
   polybench_print_instruments;
+
 
   /* Prevent dead-code elimination. All live-out data must be printed
      by the function call in argument. */
